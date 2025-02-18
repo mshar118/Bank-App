@@ -1,0 +1,59 @@
+{
+  "defects": [
+    {
+      "id": 1,
+      "title": "Able to add new cusomter without mandatory fields in Postman",
+      "description": "Ran a API test to add new cusomter to using 'POST' in Postman without first name, last name which is a mandatory fields to create add a new customer\nActual Result : User is able to add a new customer without first name, last name which is a mandatory fields to create add a new customer\nExpected Result : User should not be able to add a new customer without first name and last name\nBelow are the details used for testing:\n\nAPI POST URL :http://localhost:8989/bank-api/customers/add\n\nResponse body:Response Body:{     \"firstName\": \"\",     \"lastName\": \"\",     \"middleName\": \"H\",     \"customerNumber\": 1000,     \"status\": \"Active\",     \"customerAddress\": {         \"address1\": \"123 Domain St\",         \"address2\": \"Suite D\",         \"city\": \"Hermitage\",         \"country\": \"USA\",         \"state\": \"TN\",         \"zip\": \"37076\"     },     \"contactDetails\": {         \"emailId\": \"john@test.com\",         \"homePhone\": \"6150000000\",         \"workPhone\": \"6151112222\"     } }\n\nRequest Headers\nContent-Type: application/json\nUser-Agent: PostmanRuntime/7.43.0\nAccept: */*\nPostman-Token: 018a5507-3b02-4d5c-964e-92ec98e37828\nHost: localhost:8989\nAccept-Encoding: gzip, deflate, br\nConnection: keep-alive\nContent-Length: 474\nCookie: JSESSIONID=B0F4B5F085C6E764AD78F9878314B0CF",
+      "severity": "High"
+    },
+    {
+      "id": 2,
+      "title": "Able to add new cusomter with duplicate customer number in Postman",
+      "description": "Ran a API test to add new cusomter to using 'POST' in Postman with duplicate customer number to create add a new customer\nActual Result : User is able to add a new customer with duplicate  customer number to add a new customer. We already have customer with  same customer number before\nExpected Result : User should not be able to add a new customer with duplicate customer number\n\nAPI POST URL :http://localhost:8989/bank-api/customers/add\n\nResponse body:Response Body:{     \"firstName\": \"Jane\",     \"lastName\": \"DOE\",     \"middleName\": \"H\",     \"customerNumber\": 1000,     \"status\": \"Active\",     \"customerAddress\": {         \"address1\": \"123 Domain St\",         \"address2\": \"Suite D\",         \"city\": \"Hermitage\",         \"country\": \"USA\",         \"state\": \"TN\",         \"zip\": \"37076\"     },     \"contactDetails\": {         \"emailId\": \"john@test.com\",         \"homePhone\": \"6150000000\",         \"workPhone\": \"6151112222\"     } }\n\nRequest Headers\nContent-Type: application/json\nUser-Agent: PostmanRuntime/7.43.0\nAccept: */*\nPostman-Token: 018a5507-3b02-4d5c-964e-92ec98e37828\nHost: localhost:8989\nAccept-Encoding: gzip, deflate, br\nConnection: keep-alive\nContent-Length: 474\nCookie: JSESSIONID=B0F4B5F085C6E764AD78F9878314B0CF",
+      "severity": "High"
+    },
+    {
+      "id": 3,
+      "title": "Missing validation for account balance on account creation",
+      "description": "The account creation endpoint /accounts/add/{customerNumber} accepts negative balance values\nActual Result: API allows creating account with negative balance (-1000)\nExpected Result: API should validate and reject negative balance values\n\nAPI URL: http://localhost:8989/bank-api/accounts/add/1000\nRequest Body: {\n    \"accountBalance\": -1000,\n    \"accountNumber\": 5002,\n    \"accountType\": \"Saving\"\n}",
+      "severity": "High"
+    },
+    {
+      "id": 4,
+      "title": "Missing validation for account transfer amount",
+      "description": "Transfer endpoint allows zero or negative transfer amounts\nActual Result: Transfer API accepts any amount without validation\nExpected Result: Should validate transfer amount is positive and non-zero\n\nAPI URL: http://localhost:8989/bank-api/accounts/transfer/{customerNumber}\nRequest Body: {\n    \"fromAccount\": 5000,\n    \"toAccount\": 5001,\n    \"transferAmount\": 0\n}",
+      "severity": "High"
+    },
+    {
+      "id": 5,
+      "title": "No validation of account ownership during transfer",
+      "description": "Transfer API doesn't verify if accounts belong to specified customer\nActual Result: Allows transfers between accounts not owned by customer\nExpected Result: Should validate account ownership before transfer\n\nAPI URL: http://localhost:8989/bank-api/accounts/transfer/1000",
+      "severity": "Critical"
+    },
+    {
+      "id": 6,
+      "title": "Missing transaction rollback on failed transfers",
+      "description": "No transaction rollback implemented when transfer fails\nActual Result: Failed transfers may leave accounts in inconsistent state\nExpected Result: Should rollback both accounts to original state on failure\n\nAPI URL: http://localhost:8989/bank-api/accounts/transfer/{customerNumber}",
+      "severity": "Critical"
+    },
+    {
+      "id": 7,
+      "title": "No validation for duplicate account numbers",
+      "description": "Account creation allows duplicate account numbers\nActual Result: Multiple accounts can be created with same account number\nExpected Result: Should reject creation of accounts with duplicate numbers\n\nAPI URL: http://localhost:8989/bank-api/accounts/add/{customerNumber}\nRequest Body: {\n    \"accountNumber\": 5000\n}",
+      "severity": "High"
+    },
+    {
+      "id": 8,
+      "title": "Customer Id not retrieved when Customer details are retrieved",
+      "description": "Steps to reproduce :\n1) Call http://localhost:8989/bank-api/customers/all get API call\n2) It returns customer details without customer Id.",
+      "severity": "High"
+    },
+    {
+      "id": 9,
+      "title": "Account Number supported should be 13 digits long.",
+      "description": "Steps to reproduce :\n1) Call http://localhost:8989/bank-api/accounts/add/{customerId} POST API call by passing below payload\n{\n    \"accountNumber\": 123456789,\n    \"bankInformation\": {\n        \"branchCode\": \"001\",\n        \"branchName\": \"Main Branch\",\n        \"routingNumber\": \"123456789\",\n        \"branchAddress\": {\n            \"address1\": \"123 Main St\",\n            \"address2\": \"Suite 100\",\n            \"city\": \"Anytown\",\n            \"state\": \"CA\",\n            \"zip\": \"12345\",\n            \"country\": \"USA\"\n        }\n    },\n    \"accountStatus\": \"Active\",\n    \"accountType\": \"Checking\",\n    \"accountBalance\": 1000.00,\n    \"accountCreated\": \"2025-02-06T23:55:40.125-05:00\"\n}\n2) It returns \"New Account created successfully.\" with status code 201 created\nExpected : It should throw validation error - saying account number should be  valid and 13 digits long.",
+      "severity": "High"
+    }
+
+  ]
+}
